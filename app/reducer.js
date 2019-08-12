@@ -1,5 +1,5 @@
 const initialState = {
-  todo: ['Drink cola']
+  todo: []
 };
 
 export const reducer = (state = initialState, action) => {

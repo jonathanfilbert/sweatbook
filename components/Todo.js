@@ -6,7 +6,6 @@
  * @format
  * @flow
  */
-
 import React from 'react';
 import {
   View,
@@ -57,7 +56,7 @@ class Todo extends React.Component {
           <Text style={styles.title}> MY TODOS </Text>
           <ScrollView>
             {this.props.todos.map(todo => (
-              <Text style={styles.todoText} id={todo}>
+              <Text style={styles.todoText} key={todo}>
                 ✅ {todo}
               </Text>
             ))}
