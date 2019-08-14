@@ -1,28 +1,36 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { getLastWorkout, getAppState } from '../app/actions/workoutAction';
+import { connect } from 'react-redux';
+import LinearGradient from 'react-native-linear-gradient';
 
 class HomePage extends React.Component {
   constructor(props) {
     super(props);
+    this.toggleAppState = this.toggleAppState.bind(this);
+  }
+
+  toggleAppState() {
+    this.props.toggleApp();
   }
 
   render() {
     return (
-      <View style={styles.backGround}>
+      <LinearGradient colors={['#DE6262', '#FFB88C']} style={styles.backGround}>
         <View style={styles.topContainer}>
           <Text style={styles.title}>SWEATBOOK</Text>
         </View>
         <View style={styles.midContainer}>
           <Text style={styles.midTitle}>Your last workout: </Text>
         </View>
-        <Text style={styles.date}>Saturday Jun 12th</Text>
+        <Text style={styles.date}>{this.props.lastWorkout}</Text>
         <View style={styles.divider} />
         <View style={styles.bottomContainer}>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={this.toggleAppState}>
             <Text style={styles.midTitle}>Start Workout</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </LinearGradient>
     );
   }
 }
@@ -34,8 +42,7 @@ const styles = StyleSheet.create({
   backGround: {
     flex: 1,
     alignItems: 'center',
-    flexDirection: 'column',
-    backgroundColor: '#DE6262'
+    flexDirection: 'column'
   },
   title: {
     fontSize: 30,
@@ -76,4 +83,19 @@ const styles = StyleSheet.create({
   }
 });
 
-export default HomePage;
+const mapDispatchToProps = dispatch => {
+  return {
+    toggleApp: () => dispatch(getAppState())
+  };
+};
+
+const mapStateToProps = state => {
+  return {
+    lastWorkout: state.workout.lastWorkout
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(HomePage);

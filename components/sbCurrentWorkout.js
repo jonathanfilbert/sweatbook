@@ -1,37 +1,45 @@
 import React from 'react';
-import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import SearchPage from './sbSearchPage';
+import { connect } from 'react-redux';
+import { toggleModal } from '../app/actions/workoutAction';
 
 class CurrentWorkout extends React.Component {
   constructor(props) {
     super(props);
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick() {
+    this.props.toggleModal();
   }
 
   render() {
     return (
       <View style={styles.container}>
+        <Modal visible={this.props.isModalToggled} animationType="slide">
+          <SearchPage />
+        </Modal>
         <View style={styles.topContainer}>
           <Text style={styles.topText}>Current Workout</Text>
         </View>
-        <View style={styles.midContainer}>
+        <LinearGradient
+          colors={['#DE6262', '#FFB88C']}
+          style={styles.midContainer}
+        >
+          <View style={styles.currentWorkoutContainer}>
+            {this.props.currentWorkout.map((workout, index) => (
+              <Text style={{ fontWeight: 'bold', fontSize: 30 }} key={index}>
+                {workout}
+              </Text>
+            ))}
+          </View>
           <Text style={styles.midText}>Add some exercise</Text>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={this.handleClick}>
             <Text style={styles.plus}>+</Text>
           </TouchableOpacity>
-        </View>
-        <View style={styles.bottomNav}>
-          <View>
-            <Text style={styles.bottomNavbarText}>🏋️‍♂️</Text>
-          </View>
-          <View>
-            <Text style={styles.bottomNavbarText}>🕵️‍♂️</Text>
-          </View>
-          <View>
-            <Text style={styles.bottomNavbarText}>👱</Text>
-          </View>
-          <View>
-            <Text style={styles.bottomNavbarText}>🏘️</Text>
-          </View>
-        </View>
+        </LinearGradient>
       </View>
     );
   }
@@ -65,7 +73,6 @@ const styles = StyleSheet.create({
   },
   midContainer: {
     width: '100%',
-    backgroundColor: '#DE6262',
     justifyContent: 'center',
     alignItems: 'center',
     flex: 1
@@ -95,28 +102,26 @@ const styles = StyleSheet.create({
     color: 'black',
     fontWeight: 'bold'
   },
-  bottomNav: {
-    backgroundColor: 'yellow',
+  currentWorkoutContainer: {
     width: '100%',
-    height: 70,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#353b48',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 9
-    },
-    shadowOpacity: 0.48,
-    shadowRadius: 11.95,
-    elevation: 18
-  },
-  bottomNavbarText: {
-    fontSize: 30,
-    color: 'black',
-    paddingHorizontal: 30
+    alignItems: 'center'
   }
 });
 
-export default CurrentWorkout;
+const mapStateToProps = state => {
+  return {
+    isModalToggled: state.search.isModalToggled,
+    currentWorkout: state.currentWorkout.current
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    toggleModal: () => dispatch(toggleModal())
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CurrentWorkout);

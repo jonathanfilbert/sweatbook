@@ -5,12 +5,34 @@ import {
   Text,
   StyleSheet,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  ScrollView,
+  FlatList
 } from 'react-native';
+import { connect } from 'react-redux';
+import LinearGradient from 'react-native-linear-gradient';
+import { toggleModal, postCurrentWorkout } from '../app/actions/workoutAction';
+import { fuzzySearch } from '../app/fuzzySearch';
 
 class SearchPage extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      foundExercise: []
+    };
+    this.handleTextChange = this.handleTextChange.bind(this);
+    this.handleResultClicked = this.handleResultClicked.bind(this);
+  }
+
+  handleTextChange(text) {
+    this.setState({
+      foundExercise: fuzzySearch(text, this.props.workoutList, 'name')
+    });
+  }
+
+  handleResultClicked(result) {
+    this.props.postCurrentWorkout(result);
+    this.props.toggleModal();
   }
 
   render() {
@@ -22,17 +44,44 @@ class SearchPage extends React.Component {
             paddingRight={30}
             paddingLeft={30}
             style={styles.input}
+            onChangeText={this.handleTextChange}
           />
-          <TouchableOpacity style={styles.closeButton}>
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={this.props.toggleModal}
+          >
             <Text>❌</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.resultContainer}>
-          <TouchableOpacity style={styles.result}>
-            <Text style={styles.resultText}>Dumbell Press</Text>
-          </TouchableOpacity>
+          {/* <ScrollView style={{ width: '100%' }}>
+            {this.props.workoutList.map((workout, index) => (
+              <TouchableOpacity
+                style={styles.result}
+                onPress={this.props.toggleModal}
+                key={index}
+              >
+                <Text style={styles.resultText}>{workout.name}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView> */}
+          <FlatList
+            style={{ width: '100%' }}
+            data={this.state.foundExercise}
+            renderItem={({ item, index }) => (
+              <TouchableOpacity
+                style={styles.result}
+                onPress={() => this.handleResultClicked(item.name)}
+              >
+                <Text style={styles.resultText}>{item.name}</Text>
+              </TouchableOpacity>
+            )}
+          />
         </View>
-        <View style={styles.addContainer}>
+        <LinearGradient
+          colors={['#DE6262', '#FFB88C']}
+          style={styles.addContainer}
+        >
           <TextInput
             style={styles.resultText}
             placeholder="create new exercise"
@@ -40,7 +89,7 @@ class SearchPage extends React.Component {
           <TouchableOpacity>
             <Text style={styles.resultText}>➕</Text>
           </TouchableOpacity>
-        </View>
+        </LinearGradient>
       </View>
     );
   }
@@ -100,8 +149,25 @@ const styles = StyleSheet.create({
   },
   addContainer: {
     flex: 1,
-    alignItems: 'center'
+    alignItems: 'center',
+    width: '100%'
   }
 });
 
-export default SearchPage;
+const mapDispatchToProps = dispatch => {
+  return {
+    toggleModal: () => dispatch(toggleModal()),
+    postCurrentWorkout: workout => dispatch(postCurrentWorkout(workout))
+  };
+};
+
+const mapStateToProps = state => {
+  return {
+    workoutList: state.workout.exercises
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SearchPage);
