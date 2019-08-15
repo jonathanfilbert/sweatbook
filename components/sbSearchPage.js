@@ -11,17 +11,24 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
-import { toggleModal, postCurrentWorkout } from '../app/actions/workoutAction';
+import {
+  toggleModal,
+  postCurrentWorkout,
+  postCustomWorkout
+} from '../app/actions/workoutAction';
 import { fuzzySearch } from '../app/fuzzySearch';
 
 class SearchPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      foundExercise: []
+      foundExercise: [],
+      customExercise: ''
     };
     this.handleTextChange = this.handleTextChange.bind(this);
     this.handleResultClicked = this.handleResultClicked.bind(this);
+    this.handleAddCustomExercise = this.handleAddCustomExercise.bind(this);
+    this.handlePostCustomExercise = this.handlePostCustomExercise.bind(this);
   }
 
   handleTextChange(text) {
@@ -30,9 +37,22 @@ class SearchPage extends React.Component {
     });
   }
 
+  handleAddCustomExercise(text) {
+    this.setState({
+      customExercise: text
+    });
+  }
+
   handleResultClicked(result) {
     this.props.postCurrentWorkout(result);
     this.props.toggleModal();
+  }
+
+  handlePostCustomExercise() {
+    this.props.postCustomWorkout(this.state.customExercise);
+    this.setState({
+      customExercise: ''
+    });
   }
 
   render() {
@@ -83,10 +103,12 @@ class SearchPage extends React.Component {
           style={styles.addContainer}
         >
           <TextInput
+            value={this.state.customExercise}
             style={styles.resultText}
             placeholder="create new exercise"
+            onChangeText={this.handleAddCustomExercise}
           />
-          <TouchableOpacity>
+          <TouchableOpacity onPress={this.handlePostCustomExercise}>
             <Text style={styles.resultText}>➕</Text>
           </TouchableOpacity>
         </LinearGradient>
@@ -157,7 +179,8 @@ const styles = StyleSheet.create({
 const mapDispatchToProps = dispatch => {
   return {
     toggleModal: () => dispatch(toggleModal()),
-    postCurrentWorkout: workout => dispatch(postCurrentWorkout(workout))
+    postCurrentWorkout: workout => dispatch(postCurrentWorkout(workout)),
+    postCustomWorkout: workout => dispatch(postCustomWorkout(workout))
   };
 };
 

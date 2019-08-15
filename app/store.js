@@ -1,4 +1,4 @@
-import { createStore, combineReducers } from 'redux';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
 import {
   searchReducer,
   todoReducer,
@@ -6,6 +6,7 @@ import {
   appStateReducer,
   postCurrentWorkout
 } from './reducer';
+import thunk from 'redux-thunk';
 
 export const store = createStore(
   combineReducers({
@@ -14,5 +15,6 @@ export const store = createStore(
     search: searchReducer,
     appState: appStateReducer,
     currentWorkout: postCurrentWorkout
-  })
+  }),
+  applyMiddleware(thunk)
 );

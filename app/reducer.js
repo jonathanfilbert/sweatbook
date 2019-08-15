@@ -3,11 +3,6 @@ const initialState = {
   todo: []
 };
 
-const workoutState = {
-  lastWorkout: '1 Januari 2019',
-  exercises: exercises
-};
-
 export const todoReducer = (state = initialState, action) => {
   switch (action.type) {
     case 'GET_TODO':
@@ -21,10 +16,20 @@ export const todoReducer = (state = initialState, action) => {
   }
 };
 
+const workoutState = {
+  lastWorkout: '1 Januari 2019',
+  exercises: exercises
+};
+
 export const workoutReducer = (state = workoutState, action) => {
   switch (action.type) {
     case 'GET_LAST_WORKOUT':
       return state;
+    case 'POST_CUSTOM_WORKOUT':
+      return {
+        ...state,
+        exercises: [...state.exercises, { name: action.payload }]
+      };
     default:
       return state;
   }
@@ -67,8 +72,6 @@ const currentWorkout = {
 };
 
 export const postCurrentWorkout = (state = currentWorkout, action) => {
-  console.log('MASUK REDUCERRR');
-  console.log(action);
   switch (action.type) {
     case 'POST_CURRENT_WORKOUT':
       return {

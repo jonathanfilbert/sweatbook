@@ -22,3 +22,10 @@ export function postCurrentWorkout(workout) {
     payload: workout,
   };
 }
+
+export function postCustomWorkout(workout) {
+  return {
+    type: 'POST_CUSTOM_WORKOUT',
+    payload: workout,
+  };
+}
