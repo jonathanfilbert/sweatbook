@@ -4,6 +4,7 @@ import CurrentWorkout from './sbCurrentWorkout';
 import SearchPage from './sbSearchPage';
 import TabView from 'react-native-scrollable-tab-view';
 import { connect } from 'react-redux';
+import WorkoutList from './sbWorkoutListPage';
 
 class SweatBook extends React.Component {
   constructor(props) {
@@ -15,6 +16,7 @@ class SweatBook extends React.Component {
     return this.props.appState ? (
       <TabView tabBarPosition="bottom">
         <CurrentWorkout tabLabel="🏋️‍♂️" />
+        <WorkoutList tabLabel="🤸‍♀️" />
       </TabView>
     ) : (
       <HomePage />

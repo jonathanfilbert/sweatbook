@@ -74,17 +74,6 @@ class SearchPage extends React.Component {
           </TouchableOpacity>
         </View>
         <View style={styles.resultContainer}>
-          {/* <ScrollView style={{ width: '100%' }}>
-            {this.props.workoutList.map((workout, index) => (
-              <TouchableOpacity
-                style={styles.result}
-                onPress={this.props.toggleModal}
-                key={index}
-              >
-                <Text style={styles.resultText}>{workout.name}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView> */}
           <FlatList
             style={{ width: '100%' }}
             data={this.state.foundExercise}
@@ -105,7 +94,7 @@ class SearchPage extends React.Component {
           <TextInput
             value={this.state.customExercise}
             style={styles.resultText}
-            placeholder="create new exercise"
+            placeholder="Add a custom workout"
             onChangeText={this.handleAddCustomExercise}
           />
           <TouchableOpacity onPress={this.handlePostCustomExercise}>
